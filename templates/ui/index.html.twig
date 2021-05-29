@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    #title {text-align: center;}
+    #current-weather { font-size: 35px;  }
+    .main-tile {margin-top:100px;text-align: center; display:flex; justify-content:space-around; border-radius: 20px; background-color: rgba(255, 255, 255, .2); padding:40px;margin-left:50px; margin-right:50px;}
+    .forecast-tile > div { margin-top:10px;}
+    .humidity {font-style:italic; font-size: 15px}
+    .hours {font-size:20px; color: #494672;}
+    .temp{font-weight:bold; color: #54416d}
+    #manual-control > div { width: 40%; margin-right:5%; margin-left: 5%; font-size:20px;}
+    button { color:white; background-color: #2b235a; border:none; padding: 15px; font-size: 15px; border-radius:5px; height:50px;   margin: auto;}
+    #action-dashboard { display:flex; justify-content:space-around;}
+
+    body {font-family: 'Roboto'; background:linear-gradient(33deg, #8db6d4, #7a5e75);     height: 100vh; color:white;}
+</style>
+
+<div id="main_container">
+    <div id="title"><h1>Bienvenue!</h1></div>
+
+    <div id="current-weather" class="main-tile"></div>
+    <div id="manual-control" class="main-tile">
+        <div id="store-state">
+            Le store est actuellement <b><span id="is-open">FERME</span></b>.
+            <br />
+            <br />
+            La température à l'intérieur de votre véranda est de <b><span id="temperature-inside">20°C</span></b>.
+        </div>
+        <div id="action-dashboard">
+            <button> Ouvrir les stores </button>
+            <button> Ajouter un programme </button>
+        </div>
+    </div>
+   
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        window.onload = getForecast();
+        function getForecast() {
+            fetch('http://api.openweathermap.org/data/2.5/forecast?zip=01000,fr&units=metric&appid=787ce0aefbb9c43919b22e3072ea823c')
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                console.log(data);
+                let html = '';
+                for(let i = 0; i < 6; i++) {
+                    html += '<div class="forecast-tile">';
+                    html += '<img src="http://openweathermap.org/img/wn/' + data.list[i].weather[0].icon + '.png" >';
+                    let date = new Date(data.list[i].dt_txt);
+                    console.log(date);
+                    html += '<div class="hours">' +date.getUTCHours() + 'h </div>';
+                    html += '<div class="temp">' +parseInt(data.list[i].main.temp,10) + '°C </div>';
+                    html += '<div class="humidity">Humidité: ' +data.list[i].main.humidity + '% </div>';
+                    html +='</div>';
+                }
+                document.querySelector("#current-weather").innerHTML = html;
+            });
+        }
+    </script>
+{% endblock %}
