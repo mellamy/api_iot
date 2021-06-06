@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\WeatherRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=WeatherRepository::class)
+ * @ApiResource()
  */
 class Weather
 {

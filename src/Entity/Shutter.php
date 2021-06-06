@@ -1,13 +1,15 @@
 <?php
 
 namespace App\Entity;
-
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ShutterRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ShutterRepository::class)
+ * @ApiResource()
  */
+
 class Shutter
 {
     /**
