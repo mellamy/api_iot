@@ -32,7 +32,7 @@
             La température à l'intérieur de votre véranda est de <b><span id="temperature-inside">20°C</span></b>.
         </div>
         <div id="action-dashboard">
-            <button> Ouvrir les stores </button>
+            <button id="shutter-switch" onclick="shutterSwitch()"> Ouvrir les stores </button>
             <button> Ajouter un programme </button>
         </div>
     </div>
@@ -42,6 +42,8 @@
 
 {% block javascripts %}
     <script type="text/javascript">
+        var shutterState = false;
+
         window.onload = getForecast();
         function getForecast() {
             fetch('http://api.openweathermap.org/data/2.5/forecast?zip=01000,fr&units=metric&appid=787ce0aefbb9c43919b22e3072ea823c')
@@ -62,6 +64,25 @@
                     html +='</div>';
                 }
                 document.querySelector("#current-weather").innerHTML = html;
+            });
+        }
+
+
+        function shutterSwitch() {
+            var newState = shutterState ? 1 : 0;
+            fetch('/api/shutters', {method: 'POST', body: JSON.stringify({state: newState})})
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                shutterState = !shutterState;
+                if(shutterState) {
+                    document.querySelector('#shutter-switch').innerHTML = "Fermer les stores";
+                    document.querySelector('#is-open').innerHTML = "OUVERT";
+                } else {
+                    document.querySelector('#shutter-switch').innerHTML = "Ouvrir les stores";
+                    document.querySelector('#is-open').innerHTML = "FERME";
+                }
             });
         }
     </script>
